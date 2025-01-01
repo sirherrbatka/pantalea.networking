@@ -1,10 +1,10 @@
 (cl:in-package #:pantalea.networking)
 
 
-(defgeneric connect! (networking destination &optional promise))
-(defgeneric disconnect! (networking connection &optional promise))
-(defgeneric start! (networking))
-(defgeneric stop! (networking))
+(defgeneric connect! (networking destination &optional event))
+(defgeneric disconnect! (networking connection &optional event))
+(defgeneric start! (networking &optional event))
+(defgeneric stop! (networking &optional event))
 (defgeneric destination (connection))
 (defgeneric connection (networking destination))
 (defgeneric send (networking connection data))
