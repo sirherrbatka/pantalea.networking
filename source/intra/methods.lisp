@@ -38,9 +38,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                               (make-react networking destination data))))
 
 (defmethod react ((connection connection) data)
-  (let ((transport (protocol:transport connection)))
-    (map nil
-         (lambda (listener)
-           (ignore-errors (protocol:notify-incoming-data listener transport
-                                                         connection data)))
-         (protocol:incoming-data-listeners connection))))
+  (iterate
+    (with transport = (protocol:transport connection))
+    (for listener in-vector (protocol:incoming-data-listeners connection))
+    (ignore-errors (protocol:notify-incoming-data listener transport
+                                                  connection data))))
