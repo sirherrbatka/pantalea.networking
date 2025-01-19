@@ -33,17 +33,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   )
 
 (defmethod protocol:send* (networking (connection connection) data)
-  (pantalea.event-loop:add! (destination connection)
-                            (make-react networking
-                                        (destination connection)
-                                        data)))
+  (let ((destination (destination connection)))
+    (pantalea.event-loop:add! destination
+                              (make-react networking destination data))))
 
 (defmethod react ((connection connection) data)
   (let ((transport (protocol:transport connection)))
     (map nil
          (lambda (listener)
-           (ignore-errors (protocol:notify-incoming-data listener
-                                                         transport
-                                                         connection
-                                                         data)))
+           (ignore-errors (protocol:notify-incoming-data listener transport
+                                                         connection data)))
          (protocol:incoming-data-listeners connection))))
