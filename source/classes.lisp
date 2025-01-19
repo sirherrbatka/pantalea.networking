@@ -48,6 +48,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   ((%incoming-data-listeners
     :initarg :incoming-data-listeners
     :accessor incoming-data-listeners)
+   (%transport
+    :initarg :transport
+    :reader transport)
    (%outgoing-data-processors
     :initarg :outgoing-data-processors
     :accessor outgoing-data-processors)

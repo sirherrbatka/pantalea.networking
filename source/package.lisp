@@ -8,6 +8,7 @@
    #:fundamental-connection
    #:notify-incoming-data
    #:incoming-data-listeners
+   #:transport
    #:incoming-data-processors
    #:outgoing-data-processors
    #:process-incoming-data

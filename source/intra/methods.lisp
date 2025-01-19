@@ -39,7 +39,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                         data)))
 
 (defmethod react ((connection connection) data)
-  (map nil
-       (lambda (listener)
-         (ignore-errors (protocol:notify-incoming-data listener connection data)))
-       (protocol:incoming-data-listeners connection)))
+  (let ((transport (protocol:transport connection)))
+    (map nil
+         (lambda (listener)
+           (ignore-errors (protocol:notify-incoming-data listener
+                                                         transport
+                                                         connection
+                                                         data)))
+         (protocol:incoming-data-listeners connection))))

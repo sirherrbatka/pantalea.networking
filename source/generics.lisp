@@ -32,7 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 (defgeneric connection (networking destination))
 (defgeneric send* (networking connection data))
 
-(defgeneric notify-incoming-data (listener connection data))
+(defgeneric notify-incoming-data (listener networking connection data))
 (defgeneric attach-on-incoming-data! (networking listener))
 
 (defgeneric process-outgoing-data (networking processor data))
