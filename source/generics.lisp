@@ -36,6 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 (defgeneric attach-on-incoming-data! (networking listener))
 
 (defgeneric process-outgoing-data (networking processor data))
+(defgeneric process-incoming-data (networking processor data))
 
 (defgeneric add-outgoing-data-processor! (connection processor))
 (defgeneric add-incoming-data-processor! (connection processor))

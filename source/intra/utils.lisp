@@ -24,5 +24,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 (cl:in-package #:pantalea.networking.intra)
 
 
-(defun make-react (connection data)
-  (lambda () (react connection data)))
+(defun make-react (networking connection data)
+  (lambda ()
+    (iterate
+      (with data = data)
+      (for processor in-vector (protocol:incoming-data-processors connection))
+      (setf data (protocol:process-incoming-data networking processor data))
+      (finally (return (react connection data))))))

@@ -7,6 +7,10 @@
    #:fundamental-destination
    #:fundamental-connection
    #:notify-incoming-data
+   #:incoming-data-processors
+   #:outgoing-data-processors
+   #:process-incoming-data
+   #:process-outgoing-data
    #:send*
    #:send
    #:initialize-connection
