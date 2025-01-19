@@ -21,25 +21,4 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 |#
 
-(asdf:defsystem #:pantalea.networking
-  :name "networking"
-  :depends-on (#:usocket
-               #:bordeaux-threads
-               #:pantalea.queue
-               #:pantalea.promise
-               #:pantalea.event-loop
-               )
-  :serial T
-  :pathname "source"
-  :components ((:file "package")
-               (:file "generics")
-               (:file "classes")
-               (:file "functions")
-               (:module "intra"
-                :components ((:file "package")
-                             (:file "variables")
-                             (:file "generics")
-                             (:file "classes")
-                             (:file "utils")
-                             (:file "methods")))
-               ))
+(defvar *connections*)

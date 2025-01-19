@@ -24,24 +24,41 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 (cl:in-package #:pantalea.networking)
 
 
-(defgeneric connect! (networking destination &optional event))
-(defgeneric disconnect! (networking connection &optional event))
-(defgeneric start! (networking &optional event))
-(defgeneric stop! (networking &optional event))
-(defgeneric destination (connection))
-(defgeneric connection (networking destination))
-(defgeneric send* (networking connection data))
+(defclass fundamental-transport ()
+  ((%connections
+    :initarg :connections
+    :accessor connections)
+   (%outgoing-data-processors-factory
+    :initarg :outgoing-data-processors-factory
+    :accessor outgoing-data-processors-factory)
+   (%incoming-data-processors-factory
+    :initarg :incoming-data-processors-factory
+    :accessor incoming-data-processors-factory)
+   (%connection-initializer
+    :initarg :connection-initializer
+    :accessor connection-initializer)
+   (%incoming-data-listeners
+    :initarg :incoming-data-listeners
+    :accessor incoming-data-listeners))
+  (:default-initargs
+   :incoming-data-listeners (vect)
+   ))
 
-(defgeneric notify-incoming-data (listener networking connection data))
-(defgeneric attach-on-incoming-data! (networking listener))
+(defclass fundamental-connection (pantalea.event-loop:event-loop)
+  ((%incoming-data-listeners
+    :initarg :incoming-data-listeners
+    :accessor incoming-data-listeners)
+   (%outgoing-data-processors
+    :initarg :outgoing-data-processors
+    :accessor outgoing-data-processors)
+   (%incoming-data-processors
+    :initarg :incoming-data-processors
+    :accessor incoming-data-processors))
+  (:default-initargs
+   :incoming-data-listeners (vect)
+   :outgoing-data-processors (vect)
+   :incoming-data-processors (vect)
+   ))
 
-(defgeneric process-outgoing-data (networking processor data))
-
-(defgeneric add-outgoing-data-processor! (connection processor))
-(defgeneric add-incoming-data-processor! (connection processor))
-
-(defgeneric outgoing-data-processors (connection))
-(defgeneric incoming-data-processors (connection))
-
-(defgeneric make-connection (transport destination))
-(defgeneric initialize-connection (initializer transport connection))
+(defclass fundamental-destination ()
+  ())
