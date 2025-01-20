@@ -24,12 +24,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 (cl:in-package #:pantalea.networking.intra)
 
 
-(defmethod protocol:make-connection ((transport transport) (destination destination))
-  (make-instance 'connection
-                 :destination (if-let ((result (gethash (key destination) *connections*)))
-                                result
-                                (error "Connection for key ~a not found"
-                                       (key destination)))))
+(defmethod protocol:make-connection ((transport transport)
+                                     (destination destination))
+  (bind ((key (key destination))
+         ((:values result found) (gethash key *connections*)))
+    (unless found
+      (error "Connection for key ~a not found" key))
+    (make-instance 'connection :destination result)))
 
 (defmethod protocol:initialize-connection ((initializer t)
                                            (transport transport)
@@ -47,3 +48,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     (for listener in-vector (protocol:incoming-data-listeners connection))
     (ignore-errors (protocol:notify-incoming-data listener transport
                                                   connection data))))
+
+(defmethod protocol:transport-name ((object connection))
+  :pantalea.networking.intra)
+
+(defmethod protocol:transport-name ((object transport))
+  :pantalea.networking.intra)
+
+(defmethod protocol:transport-name ((object destination))
+  :pantalea.networking.intra)

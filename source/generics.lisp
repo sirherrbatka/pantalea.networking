@@ -31,18 +31,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 (defgeneric destination (connection))
 (defgeneric connection (networking destination))
 (defgeneric send* (networking connection data))
-
 (defgeneric notify-incoming-data (listener networking connection data))
 (defgeneric attach-on-incoming-data! (networking listener))
-
 (defgeneric process-outgoing-data (networking processor data))
 (defgeneric process-incoming-data (networking processor data))
-
 (defgeneric add-outgoing-data-processor! (connection processor))
 (defgeneric add-incoming-data-processor! (connection processor))
-
 (defgeneric outgoing-data-processors (connection))
 (defgeneric incoming-data-processors (connection))
-
 (defgeneric make-connection (transport destination))
 (defgeneric initialize-connection (initializer transport connection))
+(defgeneric transport-name (object))

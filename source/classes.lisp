@@ -65,3 +65,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 (defclass fundamental-destination ()
   ())
+
+(defclass networking ()
+  ((%transports
+    :initarg :transports
+    :reader transports))
+  (:default-initargs
+   :transports (make-hash-table)))
