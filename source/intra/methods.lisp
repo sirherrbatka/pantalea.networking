@@ -25,7 +25,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 (defmethod protocol:make-connection ((transport transport) (destination destination))
-  (make-instance 'connection))
+  (make-instance 'connection
+                 :destination (if-let ((result (gethash (key destination) *connections*)))
+                                result
+                                (error "Connection for key ~a not found"
+                                       (key destination)))))
 
 (defmethod protocol:initialize-connection ((initializer t)
                                            (transport transport)
