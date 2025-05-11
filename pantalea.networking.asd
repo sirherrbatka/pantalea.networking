@@ -28,6 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                #:pantalea.queue
                #:pantalea.promise
                #:pantalea.event-loop
+               #:serapeum
                )
   :serial T
   :pathname "source"
