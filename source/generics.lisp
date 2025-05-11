@@ -26,8 +26,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 (defgeneric connect! (networking destination &optional event))
 (defgeneric disconnect! (networking connection &optional event))
-(defgeneric start! (networking &optional event))
-(defgeneric stop! (networking &optional event))
+(defgeneric stop! (networking/transport/connection &optional event))
 (defgeneric destination (connection))
 (defgeneric connection (networking destination))
 (defgeneric send* (networking connection data))
@@ -42,3 +41,4 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 (defgeneric make-connection (transport destination))
 (defgeneric initialize-connection (initializer transport connection))
 (defgeneric transport-name (object))
+(defgeneric networking (object))

@@ -39,9 +39,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     :accessor connection-initializer)
    (%incoming-data-listeners
     :initarg :incoming-data-listeners
-    :accessor incoming-data-listeners))
+    :accessor incoming-data-listeners)
+   (%networking
+    :initarg :networking
+    :reader networking))
   (:default-initargs
    :incoming-data-listeners (vect)
+   :connections (make-hash-table :test 'equal)
    ))
 
 (defclass fundamental-connection (pantalea.event-loop:event-loop)

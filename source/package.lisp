@@ -24,10 +24,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 (cl:defpackage #:pantalea.networking
   (:use #:cl #:iterate)
   (:local-nicknames
-   (#:event-loop #:pantalea.event-loop))
+   (#:event-loop #:pantalea.event-loop)
+   (#:promise #:pantalea.promise))
   (:import-from #:serapeum
                 #:vect)
   (:import-from #:alexandria
+                #:maphash-values
                 #:curry)
   (:export
    #:fundamental-transport
@@ -40,7 +42,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    #:incoming-data-processors
    #:outgoing-data-processors
    #:process-incoming-data
+   #:process-incoming-data/all-processors
+   #:networking
    #:process-outgoing-data
+   #:stop!
    #:send*
    #:send
    #:initialize-connection

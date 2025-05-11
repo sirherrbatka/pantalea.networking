@@ -24,5 +24,43 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 (cl:in-package #:pantalea.networking)
 
 
-(defmethod initialize-connection :after (initializer (transport fundamental-transport) (connection fundamental-connection))
+(defmethod initialize-connection :after (initializer
+                                         (transport fundamental-transport)
+                                         (connection fundamental-connection))
   (event-loop:start! connection))
+
+(defmethod initialize-connection ((initializer t)
+                                  (transport fundamental-transport)
+                                  (connection fundamental-connection))
+  nil)
+
+(defmethod stop! ((networking networking)
+                  &optional event)
+  (maphash-values (lambda (transport) (stop! transport))
+                  (transports networking))
+  (unless (null event) (promise:fullfill! event))
+  networking)
+
+(defmethod stop! ((transport fundamental-transport)
+                  &optional event)
+  (let ((futures (list)))
+    (maphash-values (lambda (connection) (stop! connection)
+                      (let ((promise (promise:promise nil)))
+                        (push promise futures)
+                        (stop! connection promise)))
+                    (connections transport))
+    (promise:force-all futures))
+  (unless (null event) (promise:fullfill! event))
+  transport)
+
+(defmethod stop! :around ((event-loop:*event-loop* fundamental-connection)
+                          &optional event)
+  (event-loop:on-event-loop ()
+    (ignore-errors (call-next-method))
+    (unless (null event) (promise:fullfill! event)))
+  (promise:force event-loop:*event-loop*)
+  (event-loop:stop! event-loop:*event-loop*)
+  event-loop:*event-loop*)
+
+(defmethod networking ((connection fundamental-connection))
+  (networking (transport connection)))

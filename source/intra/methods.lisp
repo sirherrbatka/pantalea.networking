@@ -44,10 +44,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 (defmethod react ((connection connection) data)
   (iterate
+    (with data = (protocol:process-incoming-data/all-processors connection data))
     (with transport = (protocol:transport connection))
     (for listener in-vector (protocol:incoming-data-listeners connection))
-    (ignore-errors (protocol:notify-incoming-data listener transport
-                                                  connection data))))
+    (ignore-errors (protocol:notify-incoming-data listener
+                                                  transport
+                                                  connection
+                                                  data))))
 
 (defmethod protocol:transport-name ((object connection))
   :pantalea.networking.intra)
@@ -57,3 +60,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 (defmethod protocol:transport-name ((object destination))
   :pantalea.networking.intra)
+
+(defmethod protocol:stop! ((connection connection) &optional event)
+  (declare (ignore event))
+  connection)
