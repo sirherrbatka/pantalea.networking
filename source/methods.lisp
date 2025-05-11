@@ -22,3 +22,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 |#
 
 (cl:in-package #:pantalea.networking)
+
+
+(defmethod initialize-connection :after (initializer (transport fundamental-transport) (connection fundamental-connection))
+  (event-loop:start! connection))
