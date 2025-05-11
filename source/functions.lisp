@@ -28,5 +28,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   (iterate
     (with data = data)
     (for processor in-vector (outgoing-data-processors connection))
-    (setf data (proccess-outgoing-data networking processor data))
-    (finally (return (send* networking connection data)))))
+    (setf data (process-outgoing-data networking processor data))
+    (finally (return (event-loop:add! connection (curry #'send* networking connection data))))))

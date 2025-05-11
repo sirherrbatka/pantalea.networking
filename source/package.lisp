@@ -23,8 +23,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 (cl:defpackage #:pantalea.networking
   (:use #:cl #:iterate)
+  (:local-nicknames
+   (#:event-loop #:pantalea.event-loop))
   (:import-from #:serapeum
                 #:vect)
+  (:import-from #:alexandria
+                #:curry)
   (:export
    #:fundamental-transport
    #:fundamental-destination
