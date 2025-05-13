@@ -25,13 +25,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   (:use #:cl #:iterate)
   (:local-nicknames
    (#:event-loop #:pantalea.event-loop)
-   (#:promise #:pantalea.promise))
+   (#:promise #:pantalea.promise)
+   (#:errors #:pantalea.errors))
   (:import-from #:serapeum
                 #:vect)
   (:import-from #:alexandria
                 #:maphash-values
                 #:curry)
   (:export
+   #:connection-initialization-error
    #:fundamental-transport
    #:fundamental-destination
    #:fundamental-connection

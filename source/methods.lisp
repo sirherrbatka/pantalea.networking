@@ -23,11 +23,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 (cl:in-package #:pantalea.networking)
 
-
-(defmethod initialize-connection :after (initializer
-                                         (transport fundamental-transport)
-                                         (connection fundamental-connection))
-  (event-loop:start! connection))
+(defmethod initialize-connection :around ((initializer t)
+                                          (transport fundamental-transport)
+                                          (connection fundamental-connection))
+  (errors:with-link (errors:!!! connection-initialization-error)
+      (connection-initialization-error)
+    (call-next-method)))
 
 (defmethod initialize-connection ((initializer t)
                                   (transport fundamental-transport)
