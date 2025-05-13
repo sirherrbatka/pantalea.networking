@@ -28,6 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    (#:promise #:pantalea.promise)
    (#:errors #:pantalea.errors))
   (:import-from #:serapeum
+                #:lret
                 #:vect)
   (:import-from #:alexandria
                 #:maphash-values

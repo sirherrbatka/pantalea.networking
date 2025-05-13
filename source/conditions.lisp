@@ -32,3 +32,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 (errors:def unable-to-stop (networking-error)
   ())
+
+(errors:def data-processing-error (networking-error)
+  ())
+
+(errors:def connection-not-ready (networking-error)
+  ())

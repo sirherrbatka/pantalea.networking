@@ -24,9 +24,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 (cl:in-package #:pantalea.networking)
 
 
-(defgeneric connect! (networking destination &optional event))
-(defgeneric disconnect! (networking connection &optional event))
-(defgeneric stop! (networking/transport/connection &optional event))
+(defgeneric connect! (networking destination))
+(defgeneric disconnect! (networking connection))
+(defgeneric stop! (networking/transport/connection))
 (defgeneric destination (connection))
 (defgeneric connection (networking destination))
 (defgeneric send* (networking connection data))
