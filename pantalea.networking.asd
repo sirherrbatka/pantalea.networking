@@ -28,6 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                #:pantalea.queue
                #:pantalea.promise
                #:pantalea.event-loop
+               #:pantalea.errors
                #:serapeum
                )
   :serial T
@@ -42,5 +43,4 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                              (:file "generics")
                              (:file "classes")
                              (:file "utils")
-                             (:file "methods")))
-               ))
+                             (:file "methods")))))
