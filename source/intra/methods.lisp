@@ -61,6 +61,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 (defmethod protocol:transport-name ((object destination))
   :pantalea.networking.intra)
 
-(defmethod protocol:stop! ((connection connection) &optional event)
+(defmethod protocol:stop! ((connection connection))
   (declare (ignore event))
   connection)

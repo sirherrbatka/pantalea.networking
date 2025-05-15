@@ -26,7 +26,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 (defmethod initialize-connection :around ((initializer t)
                                           (transport fundamental-transport)
                                           (connection fundamental-connection))
-  (errors:with-link (errors:!!! connection-initialization-error)
+  (errors:with-link (errors:!!! connection-initialization-error nil)
       (connection-initialization-error)
     (call-next-method)))
 
@@ -41,7 +41,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   nil)
 
 (defmethod stop! ((networking networking))
-  (errors:with-link (errors:!!! unable-to-stop) (unable-to-stop)
+  (errors:with-link (errors:!!! unable-to-stop nil) (unable-to-stop)
     (let ((promises (list)))
       (maphash-values (lambda (transport)
                         (push (stop! transport) promises))
@@ -49,7 +49,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       (promise:combine-every promises))))
 
 (defmethod stop! ((transport fundamental-transport))
-  (errors:with-link (errors:!!! unable-to-stop) (unable-to-stop)
+  (errors:with-link (errors:!!! unable-to-stop nil) (unable-to-stop)
     (let ((futures (list)))
       (maphash-values (lambda (connection) (stop! connection)
                         (push (stop! connection) futures))
@@ -57,7 +57,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       (promise:combine-every futures))))
 
 (defmethod stop! :around ((event-loop:*event-loop* fundamental-connection))
-  (errors:with-link (errors:!!! unable-to-stop) (unable-to-stop)
+  (errors:with-link (errors:!!! unable-to-stop nil) (unable-to-stop)
     (lret ((result (promise:promise
                      (ignore-errors (call-next-method)))))
       (event-loop:add! event-loop:*event-loop* result))))
@@ -68,13 +68,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 (defmethod process-incoming-data :around ((networking networking)
                                           processor
                                           data)
-  (errors:with-link (errors:!!! data-processing-error) (data-processing-error)
+  (errors:with-link (errors:!!! data-processing-error nil) (data-processing-error)
     (call-next-method)))
 
 (defmethod process-outgoing-data :around ((networking networking)
                                           processor
                                           data)
-  (errors:with-link (errors:!!! data-processing-error) (data-processing-error)
+  (errors:with-link (errors:!!! data-processing-error nil) (data-processing-error)
     (call-next-method)))
 
 (defmethod connect! ((networking networking)
