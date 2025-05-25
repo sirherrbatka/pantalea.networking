@@ -21,14 +21,16 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 |#
 
-(cl:defpackage #:pantalea.networking.intra
-  (:use #:cl #:iterate)
-  (:import-from #:alexandria
-                #:if-let
-                #:when-let)
-  (:import-from #:metabang.bind
-                #:bind)
-  (:local-nicknames (#:protocol #:pantalea.networking))
-  (:local-nicknames (#:errors #:pantalea.errors))
-  (:export
-   ))
+(cl:in-package #:pantalea.networking)
+
+
+(defun find-transport (networking destination)
+  (let* ((transport-name (or (transport-name destination)
+                             (errors:!!! unkown-transport
+                                         ("TRANSPORT-NAME for destination ~a could not be found."
+                                          destination))))
+         (transport (or (gethash transport-name (transports networking))
+                        (errors:!!! unkown-transport
+                                    ("Transport for TRANSPORT-NAME ~a not found in networking."
+                                     transport-name))))))
+  transport)

@@ -27,7 +27,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 (errors:def networking-error ()
   ())
 
-(errors:def connection-initialization-error (networking-error)
+(errors:def connection-not-found (networking-error)
+  ())
+
+(errors:def cant-connect (networking-error)
+  ())
+
+(errors:def already-connected (cant-connect)
+  ())
+
+(errors:def connection-initialization-error (cant-connect)
   ())
 
 (errors:def unable-to-stop (networking-error)
@@ -37,4 +46,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   ())
 
 (errors:def connection-not-ready (networking-error)
+  ())
+
+(errors:def unkown-transport (networking-error)
   ())

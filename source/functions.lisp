@@ -37,3 +37,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     (for processor in-vector (incoming-data-processors connection))
     (setf data (process-incoming-data (networking connection) processor data))
     (finally (return data))))
+
+(defun initialize-connection/all-initializers (transport connection)
+  (iterate
+    (for initializer in-vector (connection-initializers transport))
+    (initialize-connection initializer transport connection)))

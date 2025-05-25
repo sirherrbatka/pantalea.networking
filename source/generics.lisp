@@ -42,3 +42,4 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 (defgeneric initialize-connection (initializer transport connection))
 (defgeneric transport-name (object))
 (defgeneric networking (object))
+(defgeneric connection-initializers (transport))

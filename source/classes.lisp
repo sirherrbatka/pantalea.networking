@@ -34,9 +34,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    (%incoming-data-processors-factory
     :initarg :incoming-data-processors-factory
     :accessor incoming-data-processors-factory)
-   (%connection-initializer
-    :initarg :connection-initializer
-    :accessor connection-initializer)
+   (%connection-initializers
+    :initarg :connection-initializers
+    :accessor connection-initializers)
    (%incoming-data-listeners
     :initarg :incoming-data-listeners
     :accessor incoming-data-listeners)
@@ -46,6 +46,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   (:default-initargs
    :incoming-data-listeners (vect)
    :connections (make-hash-table :test 'equal)
+   :connection-initializer (vect)
    ))
 
 (defclass fundamental-connection (pantalea.event-loop:event-loop)

@@ -29,8 +29,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   (bind ((key (key destination))
          ((:values result found) (gethash key *connections*)))
     (unless found
-      (error "Connection for key ~a not found" key))
+      (errors:!!! protocol:cant-connect ("Connection for key ~a not found" key)))
     (make-instance 'connection :destination result)))
+
+(defmethod protocol:connect! ((transport transport)
+                              (destination destination))
+  (let ((result (protocol:make-connection transport destination)))
+    (protocol:initialize-connection/all-initializers transport
+                                                     result)
+    result))
 
 (defmethod protocol:initialize-connection ((initializer t)
                                            (transport transport)

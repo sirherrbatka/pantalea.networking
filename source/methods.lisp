@@ -79,5 +79,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 (defmethod connect! ((networking networking)
                      destination)
-  ;; TODO
-  )
+  (errors:with-link (errors:!!! cant-connect nil) (cant-connect)
+    (let ((transport (find-transport networking destination)))
+      (handler-case (connection transport destination)
+        (connection-not-found (e) (declare (ignore e))
+          (return-from connect! (connect! transport destination)))))))
+
+(defmethod connection ((networking networking)
+                       destination)
+  (connection (find-transport networking destination) destination))

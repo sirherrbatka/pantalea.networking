@@ -38,6 +38,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                (:file "generics")
                (:file "classes")
                (:file "functions")
+               (:file "utils")
+               (:file "methods")
                (:module "intra"
                 :components ((:file "package")
                              (:file "variables")

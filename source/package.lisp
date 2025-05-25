@@ -43,6 +43,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    #:transport-name
    #:transport
    #:incoming-data-processors
+   #:connect!
    #:outgoing-data-processors
    #:process-incoming-data
    #:process-incoming-data/all-processors
@@ -51,5 +52,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    #:stop!
    #:send*
    #:send
+   #:networking-error
+   #:connection-not-found
+   #:already-connected
+   #:initialize-connection/all-initializers
+   #:cant-connect
+   #:connection-initialization-error
    #:initialize-connection
    #:make-connection))
