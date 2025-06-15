@@ -32,7 +32,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 (defmethod make-connection :around ((transport fundamental-transport)
                                     destination)
-  (errors:with-link (errors:!!! networking-error) (networking-error)
+  (errors:with-link (errors:!!! networking-error ("Can't establish connection!"))
+      (networking-error)
     (call-next-method)))
 
 (defmethod initialize-connection ((initializer t)
@@ -46,7 +47,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       (maphash-values (lambda (transport)
                         (push (stop! transport) promises))
                       (transports networking))
-      (promise:combine-every promises))))
+      (flatten promises))))
 
 (defmethod stop! ((transport fundamental-transport))
   (errors:with-link (errors:!!! unable-to-stop nil) (unable-to-stop)
@@ -54,13 +55,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       (maphash-values (lambda (connection) (stop! connection)
                         (push (stop! connection) futures))
                       (connections transport))
-      (promise:combine-every futures))))
+      (flatten futures))))
 
 (defmethod stop! :around ((event-loop:*event-loop* fundamental-connection))
-  (errors:with-link (errors:!!! unable-to-stop nil) (unable-to-stop)
-    (lret ((result (promise:promise
-                     (ignore-errors (call-next-method)))))
-      (event-loop:add! event-loop:*event-loop* result))))
+  (errors:with-link (errors:!!! unable-to-stop ("Can't stop."))
+      (unable-to-stop)
+    (event-loop:add! event-loop:*event-loop*
+                     (promise:promise
+                       (ignore-errors (call-next-method))))))
 
 (defmethod networking ((connection fundamental-connection))
   (networking (transport connection)))
@@ -79,12 +81,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 (defmethod connect! ((networking networking)
                      destination)
-  (errors:with-link (errors:!!! cant-connect nil) (cant-connect)
-    (let ((transport (find-transport networking destination)))
-      (handler-case (connection transport destination)
-        (connection-not-found (e) (declare (ignore e))
-          (return-from connect! (connect! transport destination)))))))
+  (let* ((transport (find-transport networking destination))
+         (connection (connection transport destination)))
+    ))
 
 (defmethod connection ((networking networking)
                        destination)
   (connection (find-transport networking destination) destination))
+
+(defmethod initialize-connection ((initializer t)
+                                  (transport fundamental-transport)
+                                  (connection fundamental-connection))
+  nil)

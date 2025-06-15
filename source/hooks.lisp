@@ -21,45 +21,7 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 |#
 
-(cl:defpackage #:pantalea.networking
-  (:use #:cl #:iterate)
-  (:local-nicknames
-   (#:event-loop #:pantalea.event-loop)
-   (#:promise #:pantalea.promise)
-   (#:errors #:pantalea.errors))
-  (:import-from #:serapeum
-                #:lret
-                #:vect)
-  (:import-from #:alexandria
-                #:flatten
-                #:maphash-values
-                #:curry)
-  (:export
-   #:connection-initialization-error
-   #:fundamental-transport
-   #:fundamental-destination
-   #:fundamental-connection
-   #:notify-incoming-data
-   #:incoming-data-listeners
-   #:transport-name
-   #:transport
-   #:incoming-data-processors
-   #:connect!
-   #:outgoing-data-processors
-   #:process-incoming-data
-   #:process-incoming-data/all-processors
-   #:networking
-   #:connection
-   #:process-outgoing-data
-   #:stop!
-   #:send*
-   #:$connection$
-   #:send
-   #:networking-error
-   #:connection-not-found
-   #:already-connected
-   #:initialize-connection/all-initializers
-   #:cant-connect
-   #:connection-initialization-error
-   #:initialize-connection
-   #:make-connection))
+(cl:in-package #:pantalea.networking)
+
+
+(event-loop:defhook $connection$)

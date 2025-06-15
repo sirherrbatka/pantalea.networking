@@ -30,5 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 #:bind)
   (:local-nicknames (#:protocol #:pantalea.networking))
   (:local-nicknames (#:errors #:pantalea.errors))
+  (:local-nicknames (#:promise #:pantalea.promise))
+  (:local-nicknames (#:event-loop #:pantalea.event-loop))
   (:export
    ))

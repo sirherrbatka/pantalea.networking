@@ -32,17 +32,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       (errors:!!! protocol:cant-connect ("Connection for key ~a not found" key)))
     (make-instance 'connection :destination result)))
 
+(defmethod protocol:connection ((transport transport) (destination destination))
+  (or (gethash (key destination) (connections transport))
+      (errors:!!! protocol:connection-not-found
+                  ("Connection not found for destination ~a" destination))))
+
 (defmethod protocol:connect! ((transport transport)
                               (destination destination))
   (let ((result (protocol:make-connection transport destination)))
     (protocol:initialize-connection/all-initializers transport
                                                      result)
+    (setf (gethash (key destination) (connections transport)) result)
     result))
-
-(defmethod protocol:initialize-connection ((initializer t)
-                                           (transport transport)
-                                           (connection connection))
-  )
 
 (defmethod protocol:send* (networking (connection connection) data)
   (let ((destination (destination connection)))

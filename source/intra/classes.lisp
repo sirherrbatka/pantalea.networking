@@ -25,7 +25,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 (defclass transport (protocol:fundamental-transport)
-  ())
+  ((%connections
+    :initarg :connections
+    :accessor connections))
+  (:default-initargs :connections (make-hash-table :test 'equal)))
 
 (defclass connection (protocol:fundamental-connection)
   ((%destination
