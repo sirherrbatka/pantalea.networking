@@ -40,6 +40,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 (defmethod protocol:connect! ((transport transport)
                               (destination destination))
   (let ((result (protocol:make-connection transport destination)))
+    (event-loop:start! result)
     (setf (gethash (key destination) (connections transport)) result)
     (event-loop:events-sequence result
         ((protocol:$connection$
