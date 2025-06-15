@@ -28,7 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   ((%connections
     :initarg :connections
     :accessor connections))
-  (:default-initargs :connections (make-hash-table :test 'equal)))
+  (:default-initargs :connections (make-hash-table :test 'equal :synchronized t)))
 
 (defclass connection (protocol:fundamental-connection)
   ((%destination
