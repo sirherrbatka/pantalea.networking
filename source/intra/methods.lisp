@@ -46,9 +46,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         ((protocol:$connection$
           ()
           (handler-case
-              (progn
-                (protocol:initialize-connection/all-initializers transport result)
-                result)
+              (protocol:initialize-connection/all-initializers transport result)
+            (:no-error (e) (declare (ignore e))
+              result)
             (error (e)
               (remhash (key destination) (connections transport))
               (error e))))))

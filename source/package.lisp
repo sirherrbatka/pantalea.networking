@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 #:lret
                 #:vect)
   (:import-from #:alexandria
+                #:when-let
                 #:flatten
                 #:maphash-values
                 #:curry)
@@ -62,4 +63,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    #:cant-connect
    #:connection-initialization-error
    #:initialize-connection
+   #:make-networking
    #:make-connection))

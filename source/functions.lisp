@@ -42,3 +42,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   (iterate
     (for initializer in-vector (connection-initializers transport))
     (initialize-connection initializer transport connection)))
+
+(defun make-networking (&rest transports)
+  (make-instance 'networking
+                 :transports (iterate
+                               (with result = (make-hash-table))
+                               (for transport in transports)
+                               (for transport-name = (transport-name transport))
+                               (when-let ((existing-transport (shiftf (gethash transport-name result) transport)))
+                                 (errors:!!! duplicated-transport ("Transport ~a was provided more then once" transport-name)))
+                               (finally (return result)))))

@@ -50,3 +50,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 (errors:def unkown-transport (networking-error)
   ())
+
+(errors:def duplicated-transport (networking-error)
+  ())
