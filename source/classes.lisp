@@ -40,9 +40,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    (%incoming-data-listeners
     :initarg :incoming-data-listeners
     :accessor incoming-data-listeners)
-   (%incoming-connection-listener
-    :initarg :incoming-connection-listener
-    :accessor incoming-connection-listener)
+   (%incoming-connection-acceptor
+    :initarg :incoming-connection-acceptor
+    :accessor incoming-connection-acceptor)
    (%networking
     :initarg :networking
     :reader networking))
