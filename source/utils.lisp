@@ -34,3 +34,23 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                     ("Transport for TRANSPORT-NAME ~a not found in networking."
                                      transport-name))))))
   transport)
+
+(defun make-new-connection (transport destination)
+  (let ((event event-loop:*event*))
+    (event-loop:with-existing-events-sequence
+        (connect! transport destination)
+        event-loop:*event-loop*
+        ((connection-established
+          (:success ($connection$) :delay 0)
+          ;; set status in the transport
+          (setf (connection transport destination) $connection$
+                (connection-status $connection$) :established)
+          (let ((event-loop:*event* event))
+            (event-loop:respond $connection$)))
+         (connection-failed
+          (:failure ($connection$) :delay 0)
+          ;; erase the status in the transport
+          (setf (connection transport destination) nil)
+          (let ((event-loop:*event* event))
+            (event-loop:respond (handler-case $connection$
+                                  (error (e) e)))))))))

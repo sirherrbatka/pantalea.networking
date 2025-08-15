@@ -33,7 +33,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 (defclass connection (protocol:fundamental-connection)
   ((%destination
     :initarg :destination
-    :reader destination)))
+    :reader destination)
+   (%state
+    :initarg :state
+    :accessor state))
+  (:default-initargs
+   :state :starting-up))
 
 (defclass destination (protocol:fundamental-destination)
   ((%key

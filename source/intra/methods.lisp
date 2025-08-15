@@ -30,7 +30,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
          ((:values result found) (gethash key *connections*)))
     (unless found
       (errors:!!! protocol:cant-connect ("Connection for key ~a not found" key)))
-    (make-instance 'connection :destination result)))
+    (make-instance 'connection :destination result
+                   :connection-creating-event (event-loop:make-event intra-connection-created ()))))
 
 (defmethod protocol:connection ((transport transport) (destination destination))
   (or (gethash (key destination) (connections transport))
@@ -39,19 +40,27 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 (defmethod protocol:connect! ((transport transport)
                               (destination destination))
-  (let ((result (protocol:make-connection transport destination)))
+  (let* ((result (protocol:make-connection transport destination))
+         (connection-creating-event (protocol:connection-creating-event result)))
     (event-loop:start! result)
     (setf (gethash (key destination) (connections transport)) result)
-    (event-loop:events-sequence result
+    (pantalea.event-loop:with-new-events-sequence result
         ((protocol:$connection$
           ()
           (handler-case
               (protocol:initialize-connection/all-initializers transport result)
             (:no-error (e) (declare (ignore e))
+              (setf (event-loop:callback connection-creating-event) (lambda () result)
+                    (state result) :established)
+              (event-loop:add-cell-event! connection-creating-event)
               result)
             (error (e)
               (remhash (key destination) (connections transport))
-              (error e))))))
+              (setf (event-loop:callback connection-creating-event) (lambda () (error e))
+                    (state result) :shutting-down)
+              (event-loop:add-cell-event! connection-creating-event)
+              (error e)))))
+      (pantalea.event-loop:add-cell-event! protocol:$connection$))
     result))
 
 (defmethod protocol:send* (networking (connection connection) data)

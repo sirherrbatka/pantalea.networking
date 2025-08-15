@@ -28,7 +28,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 (defgeneric disconnect! (networking connection))
 (defgeneric stop! (networking/transport/connection))
 (defgeneric destination (connection))
-(defgeneric connection (networking destination))
 (defgeneric send* (networking connection data))
 (defgeneric notify-incoming-data (listener networking connection data))
 (defgeneric attach-on-incoming-data! (networking listener))
@@ -43,3 +42,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 (defgeneric transport-name (object))
 (defgeneric networking (object))
 (defgeneric connection-initializers (transport))
+
+(defgeneric connection-status (connection))
+(defgeneric (setf connection-status) (new-value connection))
+(defgeneric connection (networking destination))
+(defgeneric (setf connection) (new-value transport destination))
+(defgeneric connection-creating-event (connection))
+(defgeneric connection-creating-event (connection))

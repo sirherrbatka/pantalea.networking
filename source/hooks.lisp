@@ -22,6 +22,3 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 |#
 
 (cl:in-package #:pantalea.networking)
-
-
-(event-loop:defhook $connection$)

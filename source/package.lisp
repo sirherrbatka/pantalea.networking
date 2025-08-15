@@ -54,6 +54,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    #:process-outgoing-data
    #:stop!
    #:send*
+   #:connection-creating-event
    #:$connection$
    #:send
    #:networking-error

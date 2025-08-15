@@ -64,7 +64,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     :accessor outgoing-data-processors)
    (%incoming-data-processors
     :initarg :incoming-data-processors
-    :accessor incoming-data-processors))
+    :accessor incoming-data-processors)
+   (%connection-creating-event
+    :initarg :connection-creating-event
+    :accessor connection-creating-event))
   (:default-initargs
    :incoming-data-listeners (vect)
    :outgoing-data-processors (vect)
