@@ -42,6 +42,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                               (destination destination))
   (let* ((result (protocol:make-connection transport destination))
          (connection-creating-event (protocol:connection-creating-event result)))
+    ;; can't just use protocol:$connection$ as connection-creating-event
+    ;; because it is attaching on the main thread, and we must
+    ;; gurantee that it won't run before we actually attach
     (event-loop:start! result)
     (setf (gethash (key destination) (connections transport)) result)
     (pantalea.event-loop:with-new-events-sequence result

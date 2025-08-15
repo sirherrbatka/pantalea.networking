@@ -85,7 +85,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
          (connection (connection transport destination))
          (connection-status (connection-status connection)))
     (alexandria:switch (connection-status)
-      (:established (event-loop:respond connection))
+      (:established
+       (event-loop:respond connection))
       (:starting-up
        (let ((connection (connection-creating-event connection))
              (event event-loop:*event*))
