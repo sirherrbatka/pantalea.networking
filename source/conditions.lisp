@@ -27,9 +27,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 (errors:def networking-error ()
   ())
 
-(errors:def connection-not-found (networking-error)
-  ())
-
 (errors:def cant-connect (networking-error)
   ())
 

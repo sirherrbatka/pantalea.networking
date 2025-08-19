@@ -38,33 +38,40 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       (errors:!!! protocol:connection-not-found
                   ("Connection not found for destination ~a" destination))))
 
-(defmethod protocol:connect! ((transport transport)
-                              (destination destination))
-  (let* ((result (protocol:make-connection transport destination))
-         (connection-creating-event (protocol:connection-creating-event result)))
-    ;; can't just use protocol:$connection$ as connection-creating-event
-    ;; because it is attaching on the main thread, and we must
-    ;; gurantee that it won't run before we actually attach
-    (event-loop:start! result)
-    (setf (gethash (key destination) (connections transport)) result)
-    (pantalea.event-loop:with-new-events-sequence result
-        ((protocol:$connection$
-          ()
-          (handler-case
-              (protocol:initialize-connection/all-initializers transport result)
-            (:no-error (e) (declare (ignore e))
-              (setf (event-loop:callback connection-creating-event) (lambda () result)
-                    (state result) :established)
-              (event-loop:add-cell-event! connection-creating-event)
-              result)
-            (error (e)
-              (remhash (key destination) (connections transport))
-              (setf (event-loop:callback connection-creating-event) (lambda () (error e))
-                    (state result) :shutting-down)
-              (event-loop:add-cell-event! connection-creating-event)
-              (error e)))))
-      (pantalea.event-loop:add-cell-event! protocol:$connection$))
-    result))
+(defmethod protocol:connect! ((transport transport) (destination destination))
+  (errors:with-link (errors:!!! protocol:cant-connect ("Can't establish connection to the destination")) (protocol:cant-connect)
+    (let* ((result (protocol:make-connection transport destination))
+           (connection-creating-event (protocol:connection-creating-event result)))
+      ;; can't just use protocol:$connection$ as connection-creating-event
+      ;; because it is attaching on the main thread, and we must
+      ;; gurantee that it won't run before we actually attach
+      (event-loop:start! result)
+      (bt2:with-lock-held ((lock transport))
+        (setf (gethash (key destination) (connections transport)) result))
+      (handler-case
+          (pantalea.event-loop:with-new-events-sequence result
+              ((protocol:$connection$
+                ()
+                (errors:with-link (errors:!!! protocol:cant-connect ("Can't establish connection to the destination")) (protocol:cant-connect)
+                  (handler-case
+                      (protocol:initialize-connection/all-initializers transport result)
+                    (:no-error (e) (declare (ignore e))
+                      (setf (event-loop:callback connection-creating-event) (lambda () result)
+                            (protocol:connection-status result) :established)
+                      (event-loop:add-cell-event! connection-creating-event)
+                      result)
+                    (error (e)
+                      (remhash (key destination) (connections transport))
+                      (setf (event-loop:callback connection-creating-event) (lambda () (error e))
+                            (state result) :shutting-down)
+                      (event-loop:add-cell-event! connection-creating-event)
+                      (error e))))))
+            (pantalea.event-loop:add-cell-event! protocol:$connection$))
+        (error (e)
+          (bt2:with-lock-held ((lock transport))
+            (remhash (key destination) (connections transport)))
+          (error e)))
+      result)))
 
 (defmethod protocol:send* (networking (connection connection) data)
   (let ((destination (destination connection)))

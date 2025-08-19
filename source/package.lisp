@@ -31,6 +31,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 #:lret
                 #:vect)
   (:import-from #:alexandria
+                #:switch
+                #:eswitch
                 #:when-let
                 #:flatten
                 #:maphash-values
@@ -58,6 +60,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    #:$connection$
    #:send
    #:networking-error
+   #:connection-status
    #:connection-not-found
    #:already-connected
    #:initialize-connection/all-initializers

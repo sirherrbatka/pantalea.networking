@@ -67,12 +67,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     :accessor incoming-data-processors)
    (%connection-creating-event
     :initarg :connection-creating-event
-    :accessor connection-creating-event))
+    :accessor connection-creating-event)
+   (%connection-status
+    :initarg :connection-status
+    :accessor connection-status)
+   (%lock
+    :initform (bt2:make-lock)
+    :reader lock))
   (:default-initargs
    :incoming-data-listeners (vect)
    :outgoing-data-processors (vect)
    :incoming-data-processors (vect)
-   ))
+   :connection-status :starting-up))
 
 (defclass fundamental-destination ()
   ())
