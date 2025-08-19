@@ -49,7 +49,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   (:default-initargs
    :incoming-data-listeners (vect)
    :connections (make-hash-table :test 'equal)
-   :connection-initializer (vect)
+   :connection-initializers (vect)
    ))
 
 (defclass fundamental-connection (pantalea.event-loop:event-loop)

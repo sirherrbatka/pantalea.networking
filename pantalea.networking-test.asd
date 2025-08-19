@@ -20,19 +20,12 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 |#
-
-(cl:defpackage #:pantalea.networking.intra
-  (:use #:cl #:iterate)
-  (:import-from #:alexandria
-                #:if-let
-                #:when-let)
-  (:import-from #:metabang.bind
-                #:bind)
-  (:local-nicknames (#:protocol #:pantalea.networking))
-  (:local-nicknames (#:errors #:pantalea.errors))
-  (:local-nicknames (#:promise #:pantalea.promise))
-  (:local-nicknames (#:event-loop #:pantalea.event-loop))
-  (:export
-   #:transport
-   #:destination
-   ))
+(asdf:defsystem #:pantalea.networking-tests
+  :name "networking-tests"
+  :depends-on (#:pantalea.networking #:rove)
+  :serial T
+  :pathname "tests"
+  :components ((:module "intra"
+                :components ((:file "tests"))))
+  :perform (asdf:test-op (op c)
+             (uiop:symbol-call :rove :run :pantalea.networking-tests)))

@@ -61,7 +61,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    #:send
    #:networking-error
    #:connection-status
-   #:connection-not-found
    #:already-connected
    #:initialize-connection/all-initializers
    #:cant-connect

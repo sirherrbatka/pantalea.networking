@@ -81,23 +81,23 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 (defmethod connect! ((networking networking)
                      destination)
-  (errors:with-link (errors:!!! cant-connect ("Can't connect!")) (cant-connect)
-      (let* ((transport (find-transport networking destination))
-             (connection (connection transport destination))
-             (connection-status (connection-status connection)))
-        (eswitch (connection-status)
-          (:established
-           (event-loop:respond connection))
-          (:starting-up
-           (let ((connection (connection-creating-event connection))
-                 (event event-loop:*event*))
-             (event-loop:make-event started-up (:success (connection))
-               (event-loop:respond connection event))
-             (event-loop:make-event failed (:failure (connection))
-               (event-loop:respond (handler-case connection (error (e) e))
-                                   event))))
-          (:shutting-down (make-new-connection transport destination))
-          (:missing (make-new-connection transport destination))))))
+  (let* ((transport (find-transport networking destination))
+         (connection (connection transport destination))
+         (connection-status (connection-status connection)))
+    (log:info "Picked transport ~a" transport)
+    (eswitch (connection-status)
+      (:established
+       (event-loop:respond connection))
+      (:starting-up
+       (let ((connection (connection-creating-event connection))
+             (event event-loop:*event*))
+         (event-loop:make-event started-up (:success (connection))
+           (event-loop:respond connection event))
+         (event-loop:make-event failed (:failure (connection))
+           (event-loop:respond (handler-case connection (error (e) e))
+                               event))))
+      (:shutting-down (make-new-connection transport destination))
+      (:missing (make-new-connection transport destination)))))
 
 (defmethod connection ((networking networking)
                        destination)
@@ -115,3 +115,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 (defmethod (setf connection-status) :around (new-value (connection fundamental-connection))
   (bt2:with-lock-held ((lock connection))
     (call-next-method)))
+
+(defmethod connection-status ((connection (eql nil)))
+  :missing)

@@ -25,26 +25,26 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 (defun find-transport (networking destination)
-  (let* ((transport-name (or (transport-name destination)
-                             (errors:!!! unkown-transport
-                                         ("TRANSPORT-NAME for destination ~a could not be found."
-                                          destination))))
-         (transport (or (gethash transport-name (transports networking))
-                        (errors:!!! unkown-transport
-                                    ("Transport for TRANSPORT-NAME ~a not found in networking."
-                                     transport-name))))))
-  transport)
+  (let ((transport-name (or (transport-name destination)
+                            (errors:!!! unkown-transport
+                                        ("TRANSPORT-NAME for destination ~a could not be found."
+                                         destination)))))
+    (or (gethash transport-name (transports networking))
+        (errors:!!! unkown-transport
+                    ("Transport for TRANSPORT-NAME ~a not found in networking."
+                     transport-name)))))
 
 (defun make-new-connection (transport destination)
+  (declare (optimize (debug 3) (safety 3)))
   (let ((event event-loop:*event*))
     (event-loop:with-existing-events-sequence
         (connect! transport destination)
         event-loop:*event-loop*
         ((connection-established
           (:success ($connection$) :delay 0)
+          (log:info "Connection ~a established, will respond to the request."
+                    $connection$)
           ;; set status in the transport
-          (setf (connection transport destination) $connection$
-                (connection-status $connection$) :established)
           (let ((event-loop:*event* event))
             (event-loop:respond $connection$)))
          (connection-failed
