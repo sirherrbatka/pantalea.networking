@@ -49,3 +49,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
               (state result) :shutting-down)
         (event-loop:add-cell-event! connection-creating-event)
         (error e)))))
+
+(defun incoming-connection (this-transport key connection)
+  (protocol:with-locked-transport (this-transport)
+    (let ((connection (make-instance 'connection
+                                     :destination connection
+                                     :transport this-transport
+                                     :connection-creating-event (event-loop:make-event intra-connection-created ()))))
+      (setf (gethash key (connections this-transport)) connection)
+      (event-loop:start! connection)
+      connection)))

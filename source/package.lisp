@@ -53,6 +53,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    #:process-incoming-data/all-processors
    #:networking
    #:connection
+   #:transports
+   #:with-locked-transport
+   #:with-locked-connection
+   #:find-transport
    #:process-outgoing-data
    #:stop!
    #:send*

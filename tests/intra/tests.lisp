@@ -5,10 +5,10 @@
   (let ((event-loop:*event-loop* (make-instance 'pantalea.event-loop:event-loop)))
     (event-loop:start! event-loop:*event-loop*)
     (unwind-protect
-         (let* ((networking-a (protocol:make-networking (make-instance 'transport)))
-                (networking-b (protocol:make-networking (make-instance 'transport)))
-                (connections (serapeum:dict :a networking-a
-                                            :b networking-b))
+         (let* ((*connections* (serapeum:dict))
+                (networking-a (protocol:make-networking (make-instance 'transport :key :a)))
+                (networking-b (protocol:make-networking (make-instance 'transport :key :b)))
+                (connections *connections*)
                 (established-connection nil)
                 (sequence
                   (event-loop:with-new-events-sequence
@@ -29,13 +29,17 @@
 
 (rove:deftest simple-connection-test
   (let* ((event-loop:*event-loop* (make-instance 'pantalea.event-loop:event-loop))
-         (transport (make-instance 'transport))
-         (*connections* (serapeum:dict :a nil)))
+         (*connections* (serapeum:dict))
+         (networking-a (protocol:make-networking (make-instance 'transport :key :a)))
+         (networking-b (protocol:make-networking (make-instance 'transport :key :b)))
+         (transport-a (protocol:find-transport networking-a :pantalea.networking.intra))
+         (transport-b (protocol:find-transport networking-b :pantalea.networking.intra)))
+    (declare (optimize (debug 3)))
     (event-loop:start! event-loop:*event-loop*)
     (unwind-protect
-         (let ((connection (protocol:make-connection transport (make-instance 'destination :key :a))))
+         (let ((connection (protocol:make-connection transport-a (make-instance 'destination :key :b))))
            (rove:ok (not (null connection)))
-           (connection-initialization connection transport (make-instance 'destination :key :a)))
+           (connection-initialization connection transport-b (make-instance 'destination :key :a)))
       (event-loop:stop! event-loop:*event-loop*))))
 
 #+(or)

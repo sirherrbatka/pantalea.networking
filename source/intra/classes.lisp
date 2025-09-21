@@ -28,24 +28,23 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   ((%connections
     :initarg :connections
     :accessor connections)
-   (%lock
-    :initarg :lock
-    :accessor lock))
+   (%key
+    :initarg :key
+    :accessor key))
   (:default-initargs
-   :lock (bt2:make-lock)
    :connections (make-hash-table :test 'equal :synchronized t)))
 
 (defclass connection (protocol:fundamental-connection)
   ((%destination
     :initarg :destination
-    :reader destination)
-   (%state
-    :initarg :state
-    :accessor state))
+    :accessor destination))
   (:default-initargs
-   :state :starting-up))
+   :destination nil))
 
 (defclass destination (protocol:fundamental-destination)
   ((%key
     :initarg :key
-    :accessor key)))
+    :accessor key)
+   (%transport
+    :initarg :transport
+    :accessor transport)))

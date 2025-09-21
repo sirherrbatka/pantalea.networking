@@ -45,12 +45,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     :accessor incoming-connection-acceptor)
    (%networking
     :initarg :networking
-    :reader networking))
+    :reader networking)
+   (%lock
+    :initarg :lock
+    :reader lock))
   (:default-initargs
+   :lock (bt2:make-lock)
+   :networking *networking*
    :incoming-data-listeners (vect)
    :connections (make-hash-table :test 'equal)
-   :connection-initializers (vect)
-   ))
+   :connection-initializers (vect)))
 
 (defclass fundamental-connection (pantalea.event-loop:event-loop)
   ((%incoming-data-listeners

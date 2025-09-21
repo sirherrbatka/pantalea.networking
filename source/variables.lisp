@@ -20,27 +20,7 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 |#
-
 (cl:in-package #:pantalea.networking)
 
 
-(defun make-new-connection (transport destination)
-  (declare (optimize (debug 3) (safety 3)))
-  (let ((event event-loop:*event*))
-    (event-loop:with-existing-events-sequence
-        (connect! transport destination)
-        event-loop:*event-loop*
-        ((connection-established
-          (:success ($connection$) :delay 0)
-          (log:info "Connection ~a established, will respond to the request."
-                    $connection$)
-          ;; set status in the transport
-          (let ((event-loop:*event* event))
-            (event-loop:respond $connection$)))
-         (connection-failed
-          (:failure ($connection$) :delay 0)
-          ;; erase the status in the transport
-          (setf (connection transport destination) nil)
-          (let ((event-loop:*event* event))
-            (event-loop:respond (handler-case $connection$
-                                  (error (e) e)))))))))
+(defvar *networking*)

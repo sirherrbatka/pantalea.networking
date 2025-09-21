@@ -26,6 +26,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   (:import-from #:alexandria
                 #:if-let
                 #:when-let)
+  (:import-from #:serapeum
+                #:lret
+                #:~>)
   (:import-from #:metabang.bind
                 #:bind)
   (:local-nicknames (#:protocol #:pantalea.networking))

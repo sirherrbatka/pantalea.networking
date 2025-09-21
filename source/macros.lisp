@@ -24,23 +24,21 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 (cl:in-package #:pantalea.networking)
 
 
-(defun make-new-connection (transport destination)
-  (declare (optimize (debug 3) (safety 3)))
-  (let ((event event-loop:*event*))
-    (event-loop:with-existing-events-sequence
-        (connect! transport destination)
-        event-loop:*event-loop*
-        ((connection-established
-          (:success ($connection$) :delay 0)
-          (log:info "Connection ~a established, will respond to the request."
-                    $connection$)
-          ;; set status in the transport
-          (let ((event-loop:*event* event))
-            (event-loop:respond $connection$)))
-         (connection-failed
-          (:failure ($connection$) :delay 0)
-          ;; erase the status in the transport
-          (setf (connection transport destination) nil)
-          (let ((event-loop:*event* event))
-            (event-loop:respond (handler-case $connection$
-                                  (error (e) e)))))))))
+(defmacro with-locked-connection ((connection) &body body)
+  `(bt2:with-lock-held ((lock ,connection))
+     ,@body))
+
+(defmacro with-locked-transport ((transport) &body body)
+  `(bt2:with-lock-held ((lock ,transport))
+     ,@body))
+
+(defmacro make-networking (&rest transports)
+  `(lret ((*networking* (make-instance 'networking)))
+     (setf (slot-value *networking* '%transports)
+           (iterate
+             (with result = (make-hash-table))
+             (for transport in (list ,@transports))
+             (for transport-name = (transport-name transport))
+             (when-let ((existing-transport (shiftf (gethash transport-name result) transport)))
+               (errors:!!! duplicated-transport ("Transport ~a was provided more then once" transport-name)))
+             (finally (return result))))))

@@ -23,14 +23,29 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 (cl:in-package #:pantalea.networking.intra)
 
 
-(defmethod protocol:make-connection ((transport transport)
-                                     (destination destination))
+(defmethod initialize-instance :after ((instance transport) &rest initargs &key)
+  (declare (ignore initargs))
+  (setf (gethash (key instance) *connections*) (protocol:networking instance)))
+
+(defmethod initialize-instance :after ((instance destination) &rest initargs &key)
+  (declare (ignore initargs))
+  (setf (transport instance) (~> instance key
+                                 (gethash *connections*)
+                                 (protocol:find-transport instance))))
+
+(defmethod protocol:make-connection ((transport transport) (destination destination))
   (bind ((key (key destination))
          ((:values result found) (gethash key *connections*)))
     (unless found
       (errors:!!! protocol:cant-connect ("Connection for key ~a not found" key)))
-    (make-instance 'connection :destination result
-                   :connection-creating-event (event-loop:make-event intra-connection-created ()))))
+    (lret ((this-connection
+            (make-instance 'connection
+                           :transport transport
+                           :connection-creating-event (event-loop:make-event intra-connection-created ()))))
+      (setf (destination this-connection) (incoming-connection (protocol:find-transport result destination)
+                                                               (key transport)
+                                                               this-connection))
+      (event-loop:start! this-connection))))
 
 (defmethod protocol:connection ((transport transport) (destination destination))
   (gethash (key destination) (connections transport)))
@@ -41,18 +56,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       ;; can't just use protocol:$connection$ as connection-creating-event
       ;; because it is attaching on the main thread, and we must
       ;; gurantee that it won't run before we actually attach
-      (event-loop:start! result)
-      (bt2:with-lock-held ((lock transport))
+      (protocol:with-locked-transport (transport)
         (setf (gethash (key destination) (connections transport)) result))
       (handler-case
           (pantalea.event-loop:with-new-events-sequence result
               ((protocol:$connection$
                 ()
-                (errors:with-link (errors:!!! protocol:cant-connect ("Can't establish connection to the destination")) (protocol:cant-connect)
+                (errors:with-link (errors:!!! protocol:cant-connect ("Can't establish connection to the destination"))
+                    (protocol:cant-connect)
                   (connection-initialization result transport destination))))
             (pantalea.event-loop:add-cell-event! protocol:$connection$))
         (error (e)
-          (bt2:with-lock-held ((lock transport))
+          (protocol:with-locked-transport (transport)
             (event-loop:stop! result)
             (remhash (key destination) (connections transport)))
           (error e))))))

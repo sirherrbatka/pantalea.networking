@@ -20,7 +20,6 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 |#
-
 (cl:in-package #:pantalea.networking)
 
 
@@ -43,12 +42,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     (for initializer in-vector (connection-initializers transport))
     (initialize-connection initializer transport connection)))
 
-(defun make-networking (&rest transports)
-  (make-instance 'networking
-                 :transports (iterate
-                               (with result = (make-hash-table))
-                               (for transport in transports)
-                               (for transport-name = (transport-name transport))
-                               (when-let ((existing-transport (shiftf (gethash transport-name result) transport)))
-                                 (errors:!!! duplicated-transport ("Transport ~a was provided more then once" transport-name)))
-                               (finally (return result)))))
+(defun find-transport (networking destination)
+  (declare (optimize (debug 3)))
+  (let ((transport-name (or (and (symbolp destination)
+                                 destination)
+                            (transport-name destination)
+                            (errors:!!! unkown-transport
+                                        ("TRANSPORT-NAME for destination ~a could not be found."
+                                         destination)))))
+    (or (gethash transport-name (transports networking))
+        (errors:!!! unkown-transport
+                    ("Transport for TRANSPORT-NAME ~a not found in networking."
+                     transport-name)))))
