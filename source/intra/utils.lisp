@@ -55,7 +55,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     (let ((connection (make-instance 'connection
                                      :destination connection
                                      :transport this-transport
-                                     :connection-creating-event (event-loop:make-event intra-connection-created ()))))
+                                     :connection-creating-event (event-loop:make-event
+                                                                    intra-connection-created
+                                                                    ()))))
       (setf (gethash key (connections this-transport)) connection)
       (event-loop:start! connection)
       connection)))

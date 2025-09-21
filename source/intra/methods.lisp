@@ -41,7 +41,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     (lret ((this-connection
             (make-instance 'connection
                            :transport transport
-                           :connection-creating-event (event-loop:make-event intra-connection-created ()))))
+                           :connection-creating-event (event-loop:make-event
+                                                          intra-connection-created
+                                                          ()))))
       (setf (destination this-connection) (incoming-connection (protocol:find-transport result destination)
                                                                (key transport)
                                                                this-connection))

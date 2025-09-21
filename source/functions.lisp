@@ -44,8 +44,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 (defun find-transport (networking destination)
   (declare (optimize (debug 3)))
-  (let ((transport-name (or (and (symbolp destination)
-                                 destination)
+  (let ((transport-name (or (and (symbolp destination) destination)
                             (transport-name destination)
                             (errors:!!! unkown-transport
                                         ("TRANSPORT-NAME for destination ~a could not be found."
